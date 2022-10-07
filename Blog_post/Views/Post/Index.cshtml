@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Blog_post.Models.Post>
+<h1>All Posts</h1>
+@foreach(var obj in Model)
+{
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">@obj.Title</h1>
+            <p class="card-text">@obj.Text</p>
+            <a class="btn btn-primary" asp-action="Details" asp-route-id="@obj.Id">Go to Details</a>
+        </div>
+        <div class="footer">@obj.CreatedDate</div>
+    </div>
+}
