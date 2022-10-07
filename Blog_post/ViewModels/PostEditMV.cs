@@ -1,6 +1,6 @@
 ﻿namespace Blog_post.ViewModels
 {
-    public class EditMV : CreateMV
+    public class PostEditMV : PostCreateMV
     {
         public int id { get; set; }
     }

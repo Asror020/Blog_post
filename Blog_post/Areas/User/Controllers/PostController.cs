@@ -29,7 +29,7 @@ namespace Blog_post.Areas.User.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateMV posts)
+        public IActionResult Create(PostCreateMV posts)
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (ModelState.IsValid)
@@ -56,7 +56,7 @@ namespace Blog_post.Areas.User.Controllers
             var post = _context.posts.Find(id);
             return View(post);
         }
-        public IActionResult Edit(int id, [Bind("Id,Title,Text,CreateDate,AuthorId")] EditMV postVM)
+        public IActionResult Edit(int id, PostEditMV postVM)
         {
             var post = _context.posts.Find(id);
             if (ModelState.IsValid)
