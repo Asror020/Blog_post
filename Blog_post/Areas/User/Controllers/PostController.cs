@@ -20,7 +20,7 @@ namespace Blog_post.Areas.User.Controllers
         public IActionResult Index()
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var posts = _context.posts.Where(x => x.AuthorId == user);
+            var posts = _context.posts.Where(n => n.AuthorId == user).OrderByDescending(x => x.CreatedDate).ToList();
             return View(posts);
         }
         public IActionResult Create()
@@ -29,7 +29,7 @@ namespace Blog_post.Areas.User.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PostCreateMV posts)
+        public IActionResult Create(PostCreateMV posts, string submitbtn)
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (ModelState.IsValid)
@@ -41,11 +41,33 @@ namespace Blog_post.Areas.User.Controllers
                     CreatedDate = DateTime.Now,
                     AuthorId = user
                 };
+                if(submitbtn.Equals("Save as Draft"))
+                {
+                    newpost.StatusId = Enums.StatusEnum.Draft;
+                }
+                else if (submitbtn.Equals("Submit to check"))
+                {
+                    newpost.StatusId = Enums.StatusEnum.WaitingForApproval;
+                }
+                
                 _context.posts.Add(newpost);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(posts);
+        }
+        public IActionResult Details(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var post = _context.posts.Find(id);
+            if(post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
         }
         public IActionResult Edit(int? id)
         {
@@ -56,15 +78,31 @@ namespace Blog_post.Areas.User.Controllers
             var post = _context.posts.Find(id);
             return View(post);
         }
-        public IActionResult Edit(int id, PostEditMV postVM)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, PostEditMV postVM, string submitbtn)
         {
             var post = _context.posts.Find(id);
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (post == null)
+                    {
+                        return NotFound();
+                    }
                     post.Title = postVM.Title;
                     post.Text = postVM.Text;
+
+                    if (submitbtn.Equals("Save as Draft"))
+                    {
+                        post.StatusId = Enums.StatusEnum.Draft;
+                    }
+                    else if (submitbtn.Equals("Submit to check"))
+                    {
+                        post.StatusId = Enums.StatusEnum.WaitingForApproval;
+                    }
+
                     _context.posts.Update(post);
                     _context.SaveChanges();
                 }
