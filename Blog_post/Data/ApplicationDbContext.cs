@@ -11,5 +11,6 @@ namespace Blog_post.Data
         {
         }
         public DbSet<Post> posts { get; set; }
+        public DbSet<Status> Statuses { get; set; }
     }
 }

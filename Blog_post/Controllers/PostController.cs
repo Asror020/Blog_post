@@ -2,6 +2,7 @@
 using Blog_post.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Blog_post.Enums;
 
 namespace Blog_post.Controllers
 {
@@ -14,7 +15,7 @@ namespace Blog_post.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Post> posts = _context.posts;
+            IEnumerable<Post> posts = _context.posts.Where(x => x.StatusId == StatusEnum.Approve);
             if(posts == null)
             {
                 return NotFound();
