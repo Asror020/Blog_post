@@ -15,7 +15,7 @@ namespace Blog_post.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Post> posts = _context.posts.Where(x => x.StatusId != StatusEnum.Draft);
+            IEnumerable<Post> posts = _context.posts.Where(x => x.StatusId == StatusEnum.Approve);
             if(posts == null)
             {
                 return NotFound();

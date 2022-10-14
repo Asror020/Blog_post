@@ -71,35 +71,5 @@ namespace Blog_post.Areas.Admin.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Details(int? id, string btn)
-        {
-            
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var post = _context.posts.Find(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-            if (btn == null)
-            {
-                return NotFound();
-            }
-            if (btn == "approve")
-            {
-                post.StatusId = StatusEnum.Approve;
-            }
-            else if(btn == "reject")
-            {
-                post.StatusId = StatusEnum.Reject;
-            }
-            _context.posts.Update(post);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
     }
 }
