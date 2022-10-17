@@ -1,12 +1,20 @@
 using Blog_post.Data;
 using Blog_post.Models;
+using Blog_post.Services.Interfaces;
+using Blog_post.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Blog_post.Services.Admin;
+using Blog_post.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddRazorPages();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -15,6 +23,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddTransient<IAdminPostService, AdminPostService>();
+builder.Services.AddTransient<IUserPostService, UserPostService>();
+builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.Configure<IdentityOptions>(options =>
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
 

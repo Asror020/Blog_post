@@ -1,5 +1,6 @@
 ﻿using Blog_post.Data;
 using Blog_post.Models;
+using Blog_post.Services.Interfaces;
 using Blog_post.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,15 @@ namespace Blog_post.Areas.User.Controllers
     [Authorize(Roles = "User")]
     public class PostController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public PostController(ApplicationDbContext context)
+        private IUserPostService _userService;
+        public PostController(IUserPostService context)
         {
-            _context = context;
+            _userService = context;
         }
         public IActionResult Index()
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var posts = _context.posts.Where(n => n.AuthorId == user).OrderByDescending(x => x.CreatedDate).ToList();
+            var posts = _userService.GetByAuothorId(user);
             return View(posts);
         }
         public IActionResult Create()
@@ -49,40 +50,30 @@ namespace Blog_post.Areas.User.Controllers
                 {
                     newpost.StatusId = Enums.StatusEnum.WaitingForApproval;
                 }
-                
-                _context.posts.Add(newpost);
-                _context.SaveChanges();
+                _userService.CreatePost(newpost);
                 return RedirectToAction("Index");
             }
             return View(posts);
         }
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var post = _context.posts.Find(id);
+            var post = _userService.GetById(id);
             if(post == null)
             {
                 return NotFound();
             }
             return View(post);
         }
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var post = _context.posts.Find(id);
+            var post = _userService.GetById(id);
             return View(post);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PostEditMV postVM, string submitbtn)
         {
-            var post = _context.posts.Find(id);
+            var post = _userService.GetById(id);
             if (ModelState.IsValid)
             {
                 try
@@ -102,9 +93,7 @@ namespace Blog_post.Areas.User.Controllers
                     {
                         post.StatusId = Enums.StatusEnum.WaitingForApproval;
                     }
-
-                    _context.posts.Update(post);
-                    _context.SaveChanges();
+                    _userService.EditPost(post);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,13 +110,9 @@ namespace Blog_post.Areas.User.Controllers
             }
             return View(post);
         }
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if(id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var post = _context.posts.Find(id);
+            var post = _userService.GetById(id);
             return View(post);
         }
         [HttpPost]
@@ -135,19 +120,14 @@ namespace Blog_post.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int id)
         {
-            if(id == 0)
-            {
-                return NotFound();
-            }
-            var post = _context.posts.Find(id);
+            var post = _userService.GetById(id);
             if(post == null) { return NotFound(); }
-            _context.posts.Remove(post);
-            _context.SaveChanges();
+            _userService.DeletePost(post);
             return RedirectToAction("Index");
         }
         private bool PostExists(int id)
         {
-            return _context.posts.Any(e => e.Id == id);
+            return _userService.PostExists(id);
         }
     }
 }

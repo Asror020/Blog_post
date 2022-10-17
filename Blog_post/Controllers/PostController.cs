@@ -3,33 +3,29 @@ using Blog_post.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Blog_post.Enums;
+using Blog_post.Services.Interfaces;
 
 namespace Blog_post.Controllers
 {
     public class PostController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public PostController(ApplicationDbContext context)
+        private IPostService _postService;
+        public PostController(IPostService postService)
         {
-            _context = context;
+            _postService = postService;
         }
         public IActionResult Index()
         {
-            IEnumerable<Post> posts = _context.posts.Where(x => x.StatusId == StatusEnum.Approve);
+            var posts = _postService.GetLastEight();
             if(posts == null)
             {
                 return NotFound();
             }
             return View(posts);
         }
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var post = _context.posts.Find(id);
+            var post = _postService.GetById(id);
 
             if(post == null)
             {
