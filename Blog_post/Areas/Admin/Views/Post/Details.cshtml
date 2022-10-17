@@ -1,4 +1,5 @@
-﻿@model Blog_post.Models.Post
+﻿@using Blog_post.Enums
+@model Blog_post.Models.Post
 
 @{
     ViewData["Title"] = "Details";
@@ -37,14 +38,31 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status.Id)
-        </dd>
+        @if (Model.StatusId == StatusEnum.WaitingForApproval)
+        {
+            <dd class="col-sm-10">
+            Waiting for approval
+            </dd>
+        }
+        else if (Model.StatusId == StatusEnum.Approve)
+        {
+            <dd class="col-sm-10">
+            <p>Approved</p>
+            </dd>
+        }
+        else if (Model.StatusId == StatusEnum.Reject)
+        {
+            <dd class="col-sm-10">  
+            Rejected
+            </dd>
+        }
     </dl>
 </div>
 <div class="form-group">
     <button type="button" onclick="Approve()" class="btn btn-primary" id="approvebtn">Approve</button>
     <button type="button" onclick="Reject()" class="btn btn-primary" id="rejectbtn">Reject</button>
+    <h4 class="text-success" id="answer"></h4>
+    <h4 class="text-danger" id="answer1"></h4>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
@@ -66,8 +84,9 @@
                 data: { id: @Model.Id},
                 async: true,
                 success: function (data) {
-                    $("#approvebtn").text("Published"),
+                    $("#answer").text("Published"),
                     $("#rejectbtn").remove();
+                    $("#approvebtn").remove();
                 },
                 error: function (data) {
                     alert("Error");
@@ -81,7 +100,8 @@
                 data: { id: @Model.Id},
                 async: true,
                 success: function (data) {
-                    $("#rejectbtn").text("Rejected"),
+                    $("#answer1").text("Rejected");
+                    $("#rejectbtn").remove();
                     $("#approvebtn").remove();
                 },
             });
