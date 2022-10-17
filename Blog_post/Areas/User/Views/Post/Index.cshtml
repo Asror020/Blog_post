@@ -18,28 +18,9 @@
             <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
             
         </div>
-        @if(item.StatusId == StatusEnum.Draft){
             <div class="card-footer">
-                <h4>@item.CreatedDate | Status: Draft</h4>
+                <h4>@item.CreatedDate | Status: @item.Status.Name</h4>
             </div>
-        }
-        else if(item.StatusId == StatusEnum.WaitingForApproval){
-            <div class="card-footer">
-                <h4>@item.CreatedDate | Status: Waiting for approval</h4>
-            </div>
-        }
-        else if (item.StatusId == StatusEnum.Approve)
-        {
-            <div class="card-footer">
-                <h4>@item.CreatedDate | Status: Approved</h4>
-            </div>
-        }
-        else if (item.StatusId == StatusEnum.Reject)
-        {
-            <div class="card-footer">
-                <h4>@item.CreatedDate | Status: Rejected</h4>
-            </div>
-        }
         
     </div>
 }

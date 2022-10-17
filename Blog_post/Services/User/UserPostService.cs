@@ -35,7 +35,7 @@ namespace Blog_post.Services.User
 
         public List<Post> GetByAuothorId(string authorId)
         {
-            var posts = _context.posts.Where(p => p.AuthorId == authorId).OrderByDescending(x => x.CreatedDate).ToList();
+            var posts = _context.posts.Include(x => x.Status).Where(p => p.AuthorId == authorId).OrderByDescending(x => x.CreatedDate).ToList();
             return posts;
         }
 
