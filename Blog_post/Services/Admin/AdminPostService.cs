@@ -15,12 +15,12 @@ namespace Blog_post.Services.Admin
         }
         public List<Post> GetAll()
         {
-            var posts = _context.posts.Where(x => x.StatusId != StatusEnum.Draft).OrderByDescending(x => x.CreatedDate).ToList();
+            var posts = _context.posts.Include(x => x.Status).Where(x => x.StatusId != StatusEnum.Draft).OrderByDescending(x => x.CreatedDate).ToList();
             return posts;
         }
         public Post GetById(int id)
         {
-            var post = _context.posts.FirstOrDefault(x => x.Id == id);
+            var post = _context.posts.Include(x => x.Status).FirstOrDefault(x => x.Id == id);
             return post;
         }
         public void Approve(Post post)

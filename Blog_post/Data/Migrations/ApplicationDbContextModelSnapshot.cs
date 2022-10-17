@@ -54,7 +54,7 @@ namespace Blog_post.Data.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("posts");
+                    b.ToTable("posts", (string)null);
                 });
 
             modelBuilder.Entity("Blog_post.Models.Status", b =>
@@ -68,7 +68,7 @@ namespace Blog_post.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("status");
+                    b.ToTable("status", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
