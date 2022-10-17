@@ -11,15 +11,15 @@ namespace Blog_post.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class PostController : Controller
     {
-        private IAdminPostService _adminService;
+        private IAdminPostService _adminPostService;
         public PostController(IAdminPostService adminService)
         {
-            _adminService = adminService;
+            _adminPostService = adminService;
         }
 
         public IActionResult Index()
         {
-            var posts = _adminService.GetAll();
+            var posts = _adminPostService.GetAll();
             if (posts == null)
             {
                 return NotFound();
@@ -28,7 +28,7 @@ namespace Blog_post.Areas.Admin.Controllers
         }
         public IActionResult Details(int id)
         {
-            var post = _adminService.GetById(id);
+            var post = _adminPostService.GetById(id);
             if (post == null)
             {
                 return NotFound();
@@ -38,23 +38,23 @@ namespace Blog_post.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Approve(int id)
         {
-            var post = _adminService.GetById(id);
+            var post = _adminPostService.GetById(id);
             if(post == null)
             {
                 return NotFound();
             }
-            _adminService.Approve(post);
+            _adminPostService.Approve(post);
             return RedirectToAction("Index");
         }
         [HttpPost]
         public IActionResult Reject(int id)
         {
-            var post = _adminService.GetById(id);
+            var post = _adminPostService.GetById(id);
             if (post == null)
             {
                 return NotFound();
             }
-            _adminService.Reject(post);
+            _adminPostService.Reject(post);
             return RedirectToAction(nameof(Index));
         }
     }
