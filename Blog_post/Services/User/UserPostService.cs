@@ -13,11 +13,6 @@ namespace Blog_post.Services.User
         {
             _context = context;
         }
-        public Post GetById(int id)
-        {
-            var post = _context.posts.Find(id);
-            return post;
-        }
         public void EditPost(Post post)
         {
             _context.posts.Update(post);
@@ -32,7 +27,6 @@ namespace Blog_post.Services.User
         {
             return _context.posts.Any(x => x.Id == id);
         }
-
         public List<Post> GetByAuothorId(string authorId)
         {
             var posts = _context.posts.Include(x => x.Status).Where(p => p.AuthorId == authorId).OrderByDescending(x => x.CreatedDate).ToList();
