@@ -1,8 +1,4 @@
-﻿using Blog_post.Data;
-using Blog_post.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Blog_post.Enums;
+﻿using Microsoft.AspNetCore.Mvc;
 using Blog_post.Services.Interfaces;
 
 namespace Blog_post.Controllers
