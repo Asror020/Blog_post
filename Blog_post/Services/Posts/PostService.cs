@@ -2,22 +2,15 @@
 using Blog_post.Services.Interfaces;
 using Blog_post.Models;
 using Blog_post.Enums;
+using Blog_post.Services.Posts;
 
 namespace Blog_post.Services
 {
-    public class PostService : IPostService
+    public class PostService :BasePostService, IPostService
     {
-        private readonly ApplicationDbContext _context;
-        public PostService(ApplicationDbContext context)
+        public PostService(ApplicationDbContext context): base(context)
         {
-            _context = context;
         }
-        public Post GetById(int id)
-        {
-            var post = _context.posts.FirstOrDefault(x => x.Id == id);
-            return post;
-        }
-
         public List<Post> GetLastEight()
         {
             var posts = _context.posts.Where(x => x.StatusId == StatusEnum.Approve).OrderByDescending(x => x.CreatedDate).Take(8);

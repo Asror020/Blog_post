@@ -1,7 +1,4 @@
-﻿using Blog_post.Data;
-using Blog_post.Enums;
-using Blog_post.Services.Admin;
-using Blog_post.Services.Interfaces;
+﻿using Blog_post.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +13,6 @@ namespace Blog_post.Areas.Admin.Controllers
         {
             _adminPostService = adminService;
         }
-
         public IActionResult Index()
         {
             var posts = _adminPostService.GetAll();

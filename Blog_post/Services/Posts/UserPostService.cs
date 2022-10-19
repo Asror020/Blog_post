@@ -2,21 +2,15 @@
 using Blog_post.Enums;
 using Blog_post.Models;
 using Blog_post.Services.Interfaces;
+using Blog_post.Services.Posts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog_post.Services.User
 {
-    public class UserPostService : IUserPostService
+    public class UserPostService :BasePostService, IUserPostService
     {
-       private readonly ApplicationDbContext _context;
-        public UserPostService(ApplicationDbContext context)
+        public UserPostService(ApplicationDbContext context) : base(context)
         {
-            _context = context;
-        }
-        public Post GetById(int id)
-        {
-            var post = _context.posts.Find(id);
-            return post;
         }
         public void EditPost(Post post)
         {
@@ -32,7 +26,6 @@ namespace Blog_post.Services.User
         {
             return _context.posts.Any(x => x.Id == id);
         }
-
         public List<Post> GetByAuothorId(string authorId)
         {
             var posts = _context.posts.Include(x => x.Status).Where(p => p.AuthorId == authorId).OrderByDescending(x => x.CreatedDate).ToList();

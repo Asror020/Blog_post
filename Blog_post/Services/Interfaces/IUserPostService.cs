@@ -2,12 +2,11 @@
 
 namespace Blog_post.Services.Interfaces
 {
-    public interface IUserPostService
+    public interface IUserPostService : IBasePostService
     {
         List<Post> GetByAuothorId(string authorId);
         Post Details(int id);
         void CreatePost(Post post);
-        Post GetById(int id);
         void EditPost(Post post);
         void DeletePost(Post post);
         bool PostExists (int id);

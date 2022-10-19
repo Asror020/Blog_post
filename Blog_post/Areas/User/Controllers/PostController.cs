@@ -1,5 +1,4 @@
-﻿using Blog_post.Data;
-using Blog_post.Models;
+﻿using Blog_post.Models;
 using Blog_post.Services.Interfaces;
 using Blog_post.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +12,15 @@ namespace Blog_post.Areas.User.Controllers
     [Authorize(Roles = "User")]
     public class PostController : Controller
     {
-        private IUserPostService _userService;
+        private IUserPostService _userPostService;
         public PostController(IUserPostService context)
         {
-            _userService = context;
+            _userPostService = context;
         }
         public IActionResult Index()
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var posts = _userService.GetByAuothorId(user);
+            var posts = _userPostService.GetByAuothorId(user);
             return View(posts);
         }
         public IActionResult Create()
@@ -30,7 +29,7 @@ namespace Blog_post.Areas.User.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PostCreateMV posts, string submitbtn)
+        public async Task<IActionResult> Create(PostCreateMV posts, string submitbtn)
         {
             var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (ModelState.IsValid)
@@ -50,15 +49,19 @@ namespace Blog_post.Areas.User.Controllers
                 {
                     newpost.StatusId = Enums.StatusEnum.WaitingForApproval;
                 }
-                _userService.CreatePost(newpost);
+                _userPostService.CreatePost(newpost);
                 return RedirectToAction("Index");
             }
             return View(posts);
         }
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
-            var post = _userService.GetById(id);
-            if(post == null)
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var post = _userPostService.Details(id.Value);
+            if(post == null || post.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 return NotFound();
             }
@@ -66,14 +69,22 @@ namespace Blog_post.Areas.User.Controllers
         }
         public IActionResult Edit(int id)
         {
-            var post = _userService.GetById(id);
+            var post = _userPostService.Details(id);
+            if (post == null || post.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+            if (post.StatusId == Enums.StatusEnum.WaitingForApproval)
+            {
+                return NotFound();
+            }
             return View(post);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PostEditMV postVM, string submitbtn)
         {
-            var post = _userService.GetById(id);
+            var post = _userPostService.Details(id);
             if (ModelState.IsValid)
             {
                 try
@@ -93,7 +104,7 @@ namespace Blog_post.Areas.User.Controllers
                     {
                         post.StatusId = Enums.StatusEnum.WaitingForApproval;
                     }
-                    _userService.EditPost(post);
+                    _userPostService.EditPost(post);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,7 +123,15 @@ namespace Blog_post.Areas.User.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var post = _userService.GetById(id);
+            var post = _userPostService.Details(id);
+            if (post == null || post.AuthorId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+            if(post.StatusId == Enums.StatusEnum.WaitingForApproval)
+            {
+                return NotFound();
+            }
             return View(post);
         }
         [HttpPost]
@@ -120,14 +139,14 @@ namespace Blog_post.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int id)
         {
-            var post = _userService.GetById(id);
+            var post = _userPostService.Details(id);
             if(post == null) { return NotFound(); }
-            _userService.DeletePost(post);
+            _userPostService.DeletePost(post);
             return RedirectToAction("Index");
         }
         private bool PostExists(int id)
         {
-            return _userService.PostExists(id);
+            return _userPostService.PostExists(id);
         }
     }
 }

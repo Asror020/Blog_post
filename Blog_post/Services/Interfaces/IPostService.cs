@@ -2,9 +2,8 @@
 
 namespace Blog_post.Services.Interfaces
 {
-    public interface IPostService
+    public interface IPostService : IBasePostService
     {
         List<Post> GetLastEight();
-        Post GetById(int id);
     }
 }
