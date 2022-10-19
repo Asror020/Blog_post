@@ -5,8 +5,8 @@ using Blog_post.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Blog_post.Services.Admin;
 using Blog_post.Services.User;
+using Blog_post.Services.Posts;
 
 var builder = WebApplication.CreateBuilder(args);
 

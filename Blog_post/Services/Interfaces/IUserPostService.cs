@@ -2,7 +2,7 @@
 
 namespace Blog_post.Services.Interfaces
 {
-    public interface IUserPostService
+    public interface IUserPostService : IBasePostService
     {
         List<Post> GetByAuothorId(string authorId);
         Post Details(int id);

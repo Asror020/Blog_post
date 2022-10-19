@@ -2,10 +2,9 @@
 
 namespace Blog_post.Services.Interfaces
 {
-    public interface IAdminPostService
+    public interface IAdminPostService : IBasePostService
     {
         List<Post> GetAll();
-        Post GetById(int id);
         void Approve(Post post);
         void Reject(Post post);
     }

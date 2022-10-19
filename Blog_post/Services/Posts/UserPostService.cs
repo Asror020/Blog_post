@@ -2,16 +2,15 @@
 using Blog_post.Enums;
 using Blog_post.Models;
 using Blog_post.Services.Interfaces;
+using Blog_post.Services.Posts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog_post.Services.User
 {
-    public class UserPostService : IUserPostService
+    public class UserPostService :BasePostService, IUserPostService
     {
-       private readonly ApplicationDbContext _context;
-        public UserPostService(ApplicationDbContext context)
+        public UserPostService(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
         public void EditPost(Post post)
         {
